@@ -1,27 +1,20 @@
+import os, sys
 import csv
 import datetime
-import cPickle as pickle
+import jsonpickle
+import pprint
 
 class IncomeInfo:
 
-    UniversityName = ""
-    LastName = ""
-    FirstName = ""
-    MiddleInitial = ""
-    Title = ""
-    Sex = ""
-    EmploymentDate = datetime.date.min
-    Salary = .0
-
     def __init__(self, uni, lastn, firstn, midn, title, sex, empd, salary):
-        self.UniversityName = uni
-        self.LastName = lastn
-        self.FirstName = firstn
-        self.MiddleInitial = midn
-        self.Title = title
-        self.Sex = sex
-        self.EmploymentDate = empd
-        self.Salary = salary
+        self.university = uni
+        self.lastname = lastn
+        self.firstname = firstn
+        self.middleinitial = midn
+        self.title = title
+        self.sex = sex
+        self.employdate = empd
+        self.salary = salary
 
 class IncomeParser:
 
@@ -35,7 +28,7 @@ class IncomeParser:
         self.incomeinfo = []
 
     def run(self):
-        with open("../../in/am2016.csv", "rU") as csvfile:
+        with open(os.path.abspath(os.path.join("in","am2016.csv")), "rU") as csvfile:
             incomereader = csv.reader(csvfile, delimiter=',')
             for row in incomereader:
                 if row[0] == self.TARGET_UNI \
@@ -53,5 +46,7 @@ program.run()
 print "Collected {1} data from {0}".format(program.TARGET_UNI, len(program.result))
 
 # dump
-with open("../../out/income_{0}.dat".format(program.TARGET_UNI.replace(" ", "_")).lower(), "w+") as file:
-    pickle.dump(program.result, file)
+outputpath = os.path.abspath(os.path.join("out","income_{0}.dat".format(program.TARGET_UNI.replace(" ", "_")).lower()))
+
+with open(outputpath, "w+") as file:
+    file.write(jsonpickle.encode(program.result))

@@ -1,0 +1,1 @@
+scrapy crawl googlescholar -o ../../out/results.json
