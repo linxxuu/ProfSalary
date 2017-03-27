@@ -3,27 +3,25 @@ import jsonpickle
 import re
 
 import os
-import sys
-lib_path = os.path.abspath(os.path.join(".."))
-print lib_path
-sys.path.append(lib_path)
-
-import income
+# import sys
+# lib_path = os.path.abspath(os.path.join(".."))
+# print lib_path
+# sys.path.append(lib_path)
 
 class GoogleScholarSpider(scrapy.Spider):
     name = "googlescholar"
 
     #input
-    inputpath = os.path.abspath(os.path.join(
-        "..","..","out", "income_texas_a&m_university.dat"))
+    datapath = os.path.abspath(__file__ + "/../../../../../data")
     rooturl = "https://scholar.google.ch/"
     searchurl = "https://scholar.google.ch/citations?mauthors={0}&hl=en&view_op=search_authors"
     urls = []
 
     def __init__(self):
-        with open(self.inputpath, "rb") as file:
+        from ...income import income
+        with open(os.path.join(self.datapath, "income_results.dat"), "rb") as file:
             for income in jsonpickle.decode(file.read()):
-                fullname = income['lastname'] + " " + income['firstname']
+                fullname = income.lastname + " " + income.firstname
                 url = self.searchurl.format(fullname)
                 self.urls.append(url)
 
