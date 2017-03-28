@@ -35,6 +35,6 @@ class IncomeParser:
             print "\t- collected {1} data from {0}".format(self.TARGET_UNI, len(self.result))
 
         # dump
-        outputpath = os.path.join(self.datapath,"income_results.dat")
+        outputpath = os.path.join(self.datapath,"income_results.json")
         with open(outputpath, "w+") as file:
             file.write(jsonpickle.encode(self.result))

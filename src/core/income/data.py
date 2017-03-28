@@ -1,4 +1,4 @@
-class IncomeInfo:
+class IncomeInfo(object):
 
     def __init__(self, uni, lastn, firstn, midn, title, sex, empd, salary):
         self.university = uni

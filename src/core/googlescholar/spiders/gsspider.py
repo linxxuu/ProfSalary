@@ -1,12 +1,8 @@
 import scrapy
 import jsonpickle
 import re
-
 import os
-# import sys
-# lib_path = os.path.abspath(os.path.join(".."))
-# print lib_path
-# sys.path.append(lib_path)
+from ..data import *
 
 class GoogleScholarSpider(scrapy.Spider):
     name = "googlescholar"
@@ -18,8 +14,7 @@ class GoogleScholarSpider(scrapy.Spider):
     urls = []
 
     def __init__(self):
-        from ...income import income
-        with open(os.path.join(self.datapath, "income_results.dat"), "rb") as file:
+        with open(os.path.join(self.datapath, "income_results.json"), "rb") as file:
             for income in jsonpickle.decode(file.read()):
                 fullname = income.lastname + " " + income.firstname
                 url = self.searchurl.format(fullname)
@@ -62,18 +57,18 @@ class GoogleScholarSpider(scrapy.Spider):
                 publisher = None
             citations = response.css('.gsc_a_tr:nth-child({0}) .gsc_a_ac::text'.format(page)).extract_first()
             year = response.css('.gsc_a_tr:nth-child({0}) .gsc_a_h::text'.format(page)).extract_first()
-            publications.append({
-                'title':title,
-                'authors': authors,
-                'publisher': publisher,
-                'citations': 0 if citations==u'\u00a0' else int(citations), 
-                'year':year})
+            publications.append(GoogleScholarPublication(
+                title,
+                authors,
+                publisher,
+                0 if citations==u'\u00a0' else int(citations), 
+                year))
         
         # add to results
-        yield {
-            'scholar':scholar,
-            'citations':citations,
-            'hindex':hindex,
-            'i10index':i10index,
-            'publications':publications
-        }
+        yield {"data": GoogleScholarScholar(
+            scholar,
+            citations,
+            hindex,
+            i10index,
+            publications
+        )}

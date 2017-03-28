@@ -6,21 +6,21 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import jsonpickle
 import json
+import os
 
 class GooglescholarPipeline(object):
 
     def __init__(self):
-        print "test"
+        self.datapath = os.path.abspath(__file__ + "/../../../../data/googlescholar_results.json")
 
     def open_spider(self,spider):
-        self.datapath = os.path.abspath(__file__ + "/../../../../data/googlescholar_results.dat")
-        print ">>>>>>>>>>{0}".format(self.datapath)
-        self.file = open(self.datapath, 'w+')
+        self.scholars = []
 
     def close_spider(self,spider):
-        self.file = close
+        with open(self.datapath, "w+") as file:
+            file.write("{{\"scholars\": {0}}}".format(jsonpickle.encode(self.scholars)))
         
     def process_item(self, item, spider):
-        line = json.dumps(dict(item))+"\n"
-        self.file.write(line)
+        print dict(item)
+        self.scholars.append(item["data"])
         return item
